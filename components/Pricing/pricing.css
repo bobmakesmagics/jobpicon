@@ -1,0 +1,47 @@
+.middle_p_in_pricing {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 28px;
+  /* identical to box height, or 140% */
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  /* Maron Blue */
+
+  color: #3b82f6;
+}
+
+.bigTextInPricing {
+  height: fit-content;
+
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 3.8rem;
+  line-height: 1.2;
+  /* or 120% */
+
+  text-align: center;
+  letter-spacing: -0.9px;
+
+  /* Inside auto layout */
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+
+  background-image: linear-gradient(
+    138deg,
+    var(--maron-blue),
+    var(--lighter-blue)
+  );
+  -webkit-background-clip: text;
+  color: transparent;
+  display: inline;
+
+  margin-bottom: 20px ;
+}

@@ -1,0 +1,32 @@
+.above_footer_big_div {
+  display: flex;
+  justify-content: space-around;
+  padding: 0 60px;
+}
+
+.button_divs {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.text_div {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.text_in_footer {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 28px;
+  /* identical to box height, or 156% */
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  color: #6b7280;
+}

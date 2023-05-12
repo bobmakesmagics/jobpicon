@@ -1,0 +1,520 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model WaitingList {
+  id         Int     @id @default(autoincrement())
+  email      String  @unique
+  firstName  String?
+  username   String?
+  status     String  @default("pending")
+  emailCount Int     @default(0)
+}
+
+model Account {
+  id                   Int             @id @default(autoincrement())
+  id_account           String?
+  first_name           String
+  last_name            String
+  email                String
+  password             String
+  avatar_id            Int?
+  dob                  DateTime?
+  phone                String?
+  description          String?
+  gender               String?
+  package_id           Int?
+  type                 AccountTypeEnum
+  credits              Int?
+  resume               String?
+  address              String?
+  bio                  String?
+  is_public_profile    Boolean?
+  available_for_hiring Boolean?
+  country_id           Int?
+  state_id             Int?
+  city_id              Int?
+  cover_letter         String?
+
+  package          Package?            @relation(fields: [package_id], references: [id])
+  educations       AccountEducation[]
+  experiences      AccountExperience[]
+  companies        Company[]
+  job_applications JobApplication[]
+  reviews          Review[]
+  urls             AccountUrls[]
+
+  @@index([package_id])
+}
+
+model AccountUrls {
+  id         Int            @id @default(autoincrement())
+  account_id Int
+  name       AccountUrlEnum
+  url        String
+
+  account Account @relation(fields: [account_id], references: [id])
+
+  @@index([account_id])
+}
+
+model AccountEducation {
+  id          Int       @id @default(autoincrement())
+  school      String
+  account_id  Int
+  specialized String?
+  description String?
+  started_at  DateTime?
+  ended_at    DateTime?
+
+  account Account @relation(fields: [account_id], references: [id])
+
+  @@index([account_id])
+}
+
+model AccountExperience {
+  id          Int       @id @default(autoincrement())
+  company     String
+  account_id  Int
+  position    String?
+  description String?
+  started_at  DateTime?
+  ended_at    DateTime?
+
+  account Account @relation(fields: [account_id], references: [id])
+
+  @@index([account_id])
+}
+
+model CareerLevel {
+  id         Int            @id @default(autoincrement())
+  name       String
+  order      Int
+  is_default Boolean
+  status     BaseStatusEnum
+
+  jobs Job[]
+}
+
+model Category {
+  id          Int            @id @default(autoincrement())
+  name        String
+  description String?
+  order       Int
+  is_default  Boolean
+  is_featured Boolean
+  status      BaseStatusEnum
+}
+
+model Company {
+  id                  Int            @id @default(autoincrement())
+  name                String
+  status              BaseStatusEnum
+  account_id          Int
+  address             String?
+  email               String?
+  phone               String?
+  year_founded        Int?
+  number_of_offices   Int?
+  number_of_employees Int?
+  annual_revenue      Int?
+  description         String?
+  content             String?
+  website             String?
+  logo                String?
+  latitude            Float?
+  longitude           Float?
+  postal_code         String?
+  cover_image         String?
+  facebook            String?
+  twitter             String?
+  linkedin            String?
+  instagram           String?
+  ceo                 String?
+  is_featured         Boolean
+  country_id          Int?
+  state_id            Int?
+  city_id             Int?
+
+  account Account  @relation(fields: [account_id], references: [id])
+  jobs    Job[]
+  reviews Review[]
+
+  @@index([account_id])
+}
+
+model Currency {
+  id               Int     @id @default(autoincrement())
+  title            String
+  symbol           String
+  is_prefix_symbol Boolean
+  order            Int
+  decimals         Int
+  is_default       Boolean
+  exchange_rate    Float
+
+  packages Package[]
+  jobs     Job[]
+}
+
+model CustomField {
+  id              Int             @id @default(autoincrement())
+  name            String
+  type            CustomFieldEnum
+  order           Int
+  is_global       Boolean
+  authorable_type String?
+  authorable_id   Int?
+
+  options CustomFieldOption[]
+  values  CustomFieldValue[]
+}
+
+model CustomFieldOption {
+  id              Int    @id @default(autoincrement())
+  custom_field_id Int
+  label           String
+  value           String
+  order           Int
+
+  custom_field CustomField @relation(fields: [custom_field_id], references: [id])
+
+  @@index([custom_field_id])
+}
+
+model CustomFieldValue {
+  id              Int    @id @default(autoincrement())
+  name            String
+  value           String
+  reference_id    Int
+  reference_type  String
+  custom_field_id Int
+
+  custom_field CustomField @relation(fields: [custom_field_id], references: [id])
+
+  @@index([custom_field_id])
+}
+
+model DegreeLevel {
+  id         Int            @id @default(autoincrement())
+  name       String
+  order      Int
+  is_default Boolean
+  status     BaseStatusEnum
+
+  degree_types DegreeType[]
+  jobs         Job[]
+}
+
+model DegreeType {
+  id              Int            @id @default(autoincrement())
+  name            String
+  degree_level_id Int
+  order           Int
+  is_default      Boolean
+  status          BaseStatusEnum
+
+  degree_level DegreeLevel @relation(fields: [degree_level_id], references: [id])
+
+  @@index([degree_level_id])
+}
+
+model FunctionalArea {
+  id         Int            @id @default(autoincrement())
+  name       String
+  order      Int
+  is_default Boolean
+  status     BaseStatusEnum
+
+  jobs Job[]
+}
+
+model Invoice {
+  id               Int               @id @default(autoincrement())
+  code             String
+  reference_id     Int
+  reference_type   String
+  customer_name    String
+  company_name     String?
+  company_logo     String?
+  customer_email   String
+  customer_phone   String?
+  customer_address String?
+  customer_tax_id  String?
+  sub_total        Float
+  tax_amount       Float
+  shipping_amount  Float
+  discount_amount  Float
+  amount           Float
+  payment_id       Int?
+  status           InvoiceStatusEnum
+  paid_at          DateTime?
+
+  items InvoiceItem[]
+}
+
+model InvoiceItem {
+  id              Int       @id @default(autoincrement())
+  invoice_id      Int
+  reference_type  String?
+  reference_id    Int?
+  name            String
+  description     String?
+  image           String?
+  qty             Int
+  sub_total       Float
+  tax_amount      Float
+  discount_amount Float
+  amount          Float
+  metadata        Json?
+  paid_at         DateTime?
+
+  invoice Invoice @relation(fields: [invoice_id], references: [id])
+
+  @@index([invoice_id])
+}
+
+model Job {
+  id                       Int             @id @default(autoincrement())
+  name                     String
+  description              String?
+  content                  String?
+  company_id               Int
+  address                  String?
+  status                   JobStatusEnum
+  apply_url                String?
+  is_freelance             Boolean
+  career_level_id          Int
+  salary_from              Float?
+  salary_to                Float?
+  salary_range             SalaryRangeEnum
+  currency_id              Int
+  degree_level_id          Int
+  job_shift_id             Int
+  job_type_id              Int
+  job_experience_id        Int
+  functional_area_id       Int
+  hide_salary              Boolean
+  number_of_positions      Int?
+  expire_date              DateTime
+  author_id                Int
+  author_type              String
+  views                    Int
+  number_of_applied        Int
+  hide_company             Boolean
+  latitude                 Float?
+  longitude                Float?
+  auto_renew               Boolean
+  is_featured              Boolean
+  external_apply_clicks    Int?
+  country_id               Int?
+  state_id                 Int?
+  city_id                  Int?
+  employer_colleagues      Int?
+  start_date               DateTime?
+  application_closing_date DateTime?
+
+  company         Company          @relation(fields: [company_id], references: [id])
+  career_level    CareerLevel      @relation(fields: [career_level_id], references: [id])
+  currency        Currency         @relation(fields: [currency_id], references: [id])
+  degree_level    DegreeLevel      @relation(fields: [degree_level_id], references: [id])
+  job_type        JobType          @relation(fields: [job_type_id], references: [id])
+  job_shift       JobShift         @relation(fields: [job_shift_id], references: [id])
+  job_experience  JobExperience    @relation(fields: [job_experience_id], references: [id])
+  functional_area FunctionalArea   @relation(fields: [functional_area_id], references: [id])
+  applications    JobApplication[]
+
+  @@index([company_id])
+  @@index([career_level_id])
+  @@index([currency_id])
+  @@index([degree_level_id])
+  @@index([job_type_id])
+  @@index([job_shift_id])
+  @@index([job_experience_id])
+  @@index([functional_area_id])
+}
+
+model JobApplication {
+  id           Int                      @id @default(autoincrement())
+  first_name   String
+  last_name    String
+  phone        String?
+  email        String
+  resume       String?
+  cover_letter String?
+  message      String?
+  job_id       Int
+  account_id   Int
+  status       JobApplicationStatusEnum
+
+  job     Job     @relation(fields: [job_id], references: [id])
+  account Account @relation(fields: [account_id], references: [id])
+
+  @@index([job_id])
+  @@index([account_id])
+}
+
+model JobExperience {
+  id         Int            @id @default(autoincrement())
+  name       String
+  order      Int
+  is_default Boolean
+  status     BaseStatusEnum
+
+  jobs Job[]
+}
+
+model JobShift {
+  id         Int            @id @default(autoincrement())
+  name       String
+  order      Int
+  is_default Boolean
+  status     BaseStatusEnum
+
+  jobs Job[]
+}
+
+model JobSkill {
+  id         Int            @id @default(autoincrement())
+  name       String
+  order      Int
+  is_default Boolean
+  status     BaseStatusEnum
+}
+
+model JobType {
+  id         Int            @id @default(autoincrement())
+  name       String
+  order      Int
+  is_default Boolean
+  status     BaseStatusEnum
+
+  jobs Job[]
+}
+
+model LanguageLevel {
+  id         Int            @id @default(autoincrement())
+  name       String
+  order      Int
+  is_default Boolean
+  status     BaseStatusEnum
+}
+
+model Package {
+  id                 Int            @id @default(autoincrement())
+  name               String
+  price              Float
+  currency_id        Int
+  percent_save       Float
+  number_of_listings Int
+  account_limit      Int
+  order              Int
+  is_default         Boolean
+  status             BaseStatusEnum
+
+  currency Currency  @relation(fields: [currency_id], references: [id])
+  accounts Account[]
+
+  @@index([currency_id])
+}
+
+model Review {
+  id         Int            @id @default(autoincrement())
+  company_id Int
+  account_id Int
+  star       Int
+  review     String
+  status     BaseStatusEnum
+
+  company Company @relation(fields: [company_id], references: [id])
+  account Account @relation(fields: [account_id], references: [id])
+
+  @@index([account_id])
+  @@index([company_id])
+}
+
+model Tag {
+  id          Int            @id @default(autoincrement())
+  name        String
+  description String?
+  status      BaseStatusEnum
+}
+
+enum AccountTypeEnum {
+  admin
+  employer
+  candidate
+}
+
+enum BaseStatusEnum {
+  draft
+  pending
+  publish
+  trash
+}
+
+enum CustomFieldEnum {
+  text
+  textarea
+  select
+  checkbox
+  radio
+  datepicker
+}
+
+enum InvoiceStatusEnum {
+  pending
+  processing
+  completed
+  cancelled
+}
+
+enum JobStatusEnum {
+  draft
+  pending
+  publish
+  trash
+}
+
+enum ModerationStatusEnum {
+  pending
+  approved
+  rejected
+}
+
+enum SalaryRangeEnum {
+  negotiable
+  perHour
+  perWeek
+  perMonth
+  perYear
+}
+
+enum JobApplicationStatusEnum {
+  pending
+  processing
+  completed
+  cancelled
+}
+
+enum AccountUrlEnum {
+  facebook
+  twitter
+  linkedin
+  google
+  youtube
+  instagram
+  pinterest
+  github
+  stackoverflow
+  behance
+  dribbble
+  vimeo
+  website
+}
