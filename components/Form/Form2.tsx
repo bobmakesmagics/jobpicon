@@ -44,16 +44,15 @@ export function Form2() {
   const typeRef = useRef<HTMLInputElement>(null)
 
   interface FormDataType {
-    [key: string]: string
+    [key: string]: FormDataEntryValue
   }
-  const formData: FormDataType = { about: '', skills: '' }
-
+  const jobBody: FormDataType = {}
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    formData.about = inputAbout?.current?.value || ''
-    formData.skills = typeRef?.current?.value || ''
-    console.log({ ...jobData, ...formData }, 'jobData')
-    setJobData({ ...jobData, ...formData })
-    dispatch(addJob({ ...jobData, ...formData }))
+    const formData = new FormData(event.currentTarget as HTMLFormElement)
+    formData.forEach((value, property: string) => (jobBody[property] = value))
+
+    setJobData({ ...jobData, ...jobBody })
+    dispatch(addJob({ ...jobData, ...jobBody }))
     clickedNext(event, setCurrentStep)
     //Form submission happens here
   }
@@ -163,9 +162,8 @@ export function Form2() {
                       id="about"
                       name="about"
                       rows={3}
-                      ref={inputAbout}
                       className="block h-auto w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      defaultValue={jobData.about}
+                      defaultValue={jobData.about as string}
                     />
                   </div>
                 </div>
@@ -210,7 +208,8 @@ export function Form2() {
                         type="text"
                         id="skills"
                         ref={typeRef}
-                        defaultValue={jobData.skills}
+                        name="skills"
+                        defaultValue={jobData.skills as string}
                         className="customTag"
                       />
                     </div>

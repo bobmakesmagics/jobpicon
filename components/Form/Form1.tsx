@@ -13,7 +13,7 @@ import StateSelect from 'components/SelectField/StateSelect'
 import CountrySelect from 'components/SelectField/CountrySelect'
 
 interface FormDataType {
-  [key: string]: string
+  [key: string]: FormDataEntryValue
 }
 
 export function Form1() {
@@ -21,17 +21,12 @@ export function Form1() {
     useContext<IStepContext>(StepContext)
   // const dispatch = useDispatch()
 
-  const inputJobTitle = useRef<HTMLInputElement>(null)
-  const inputMinSalary = useRef<HTMLInputElement>(null)
-  const inputMaxSalary = useRef<HTMLInputElement>(null)
-
-  const formData: FormDataType = { jobTitle: '', minSalary: '', maxSalary: '' }
+  const jobBody: FormDataType = {}
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    formData.jobTitle = inputJobTitle?.current?.value || ''
-    formData.minSalary = inputMinSalary?.current?.value || ''
-    formData.maxSalary = inputMaxSalary?.current?.value || ''
-    setJobData(formData)
+    const formData = new FormData(event.currentTarget as HTMLFormElement)
+    formData.forEach((value, property: string) => (jobBody[property] = value))
+    setJobData(jobBody)
     clickedNext(event, setCurrentStep)
   }
 
@@ -73,10 +68,9 @@ export function Form1() {
                   </label>
                   <input
                     type="text"
-                    name="job-title"
+                    name="jobTitle"
                     id="job-title"
-                    ref={inputJobTitle}
-                    defaultValue={jobData.jobTitle}
+                    defaultValue={jobData.jobTitle as string}
                     autoComplete="given-name"
                     className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
@@ -94,9 +88,8 @@ export function Form1() {
                     <input
                       type="number"
                       id="min-salary"
-                      name="min-salary"
-                      ref={inputMinSalary}
-                      defaultValue={jobData.minSalary}
+                      name="minSalary"
+                      defaultValue={jobData.minSalary as string}
                       className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
                     />
                   </div>
@@ -110,9 +103,8 @@ export function Form1() {
                     <input
                       type="number"
                       id="max-salary"
-                      name="max-salary"
-                      ref={inputMaxSalary}
-                      defaultValue={jobData.maxSalary}
+                      name="maxSalary"
+                      defaultValue={jobData.maxSalary as string}
                       className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
                     />
                   </div>

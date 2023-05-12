@@ -3,8 +3,8 @@ import React, { createContext, useState } from 'react'
 export interface IStepContext {
   currentStep: number
   setCurrentStep: (value: number) => void
-  jobData: { [key: string]: string }
-  setJobData: (value: { [key: string]: string }) => void
+  jobData: { [key: string]: FormDataEntryValue }
+  setJobData: (value: { [key: string]: FormDataEntryValue }) => void
 }
 
 export const StepContext = createContext<IStepContext>({
